@@ -104,4 +104,126 @@ class Solution:
         return res
 
         
-        
+'''
+16
+'''
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        diff = float('inf')
+        n = len(nums)
+        res = 0
+        for idx in range(n-2):
+            left = idx + 1
+            right = n-1
+            while(left != right):
+                sums = nums[idx] + nums[left] + nums[right]
+                new_diff = sums - target
+                abs_new_diff = abs(new_diff)
+                if new_diff == 0:
+                    return sums
+                elif new_diff > 0:
+                    right -= 1
+                else:
+                    left += 1
+                if abs_new_diff < diff:
+                    diff = abs_new_diff
+                    res = sums
+        return res
+
+'''
+17
+'''
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        if not digits:return []
+        num_dict = {'2':['a','b','c'],'3':['d','e','f'],'4':['g','h','i'],'5':['j','k','l'],
+                    '6':['m','n','o'],'7':['p','q','r','s'],'8':['t','u','v'],'9':['w','x','y','z']}
+        combinations = []
+        n = len(digits)
+        def backtrack(idx:int, path:str):
+            if idx == n:
+                combinations.append(path)
+                return
+
+            for letter in num_dict[digits[idx]]:
+                backtrack(idx+1, path+letter)
+
+        backtrack(0, "")
+        return combinations
+
+'''
+42
+'''
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        # 初始化答案和双指针
+        ans = left = pre_max = suf_max = 0
+        right = len(height) - 1
+
+        # 当左指针不超过右指针时，循环继续
+        while left <= right:
+            # 更新左边的最高柱子
+            pre_max = max(pre_max, height[left])
+            # 更新右边的最高柱子
+            suf_max = max(suf_max, height[right])
+
+            # 如果左边的最高柱子低于右边的最高柱子
+            if pre_max < suf_max:
+                # 计算当前位置能接收的雨水量，并移动左指针
+                ans += pre_max - height[left]
+                left += 1
+            else:
+                # 否则，计算当前位置能接收的雨水量，并移动右指针
+                ans += suf_max - height[right]
+                right -= 1
+
+        # 返回计算出的总雨水量
+        return ans
+
+'''
+3
+'''
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        ans = left = 0
+        window = set()
+        for right, c in enumerate(s):
+            while c in window:
+                window.remove(s[left])
+                left += 1
+            window.add(c)
+            ans = max(ans, right - left + 1)
+        return ans
+
+'''
+438
+'''
+from collections import Counter
+
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        # 如果p长度大于s，直接返回空列表
+        if len(p) > len(s):
+            return []
+
+        # 初始化哈希表
+        p_count = Counter(p)  # 字符串p的字符计数
+        s_count = Counter()  # 字符串s的滑动窗口字符计数
+
+        result = []
+        # 遍历字符串s
+        for i in range(len(s)):
+            # 将当前字符添加到s的计数器
+            s_count[s[i]] += 1
+            # 如果窗口大小超过p的长度，则从左边移除一个字符
+            if i >= len(p):
+                if s_count[s[i - len(p)]] == 1:
+                    del s_count[s[i - len(p)]]
+                else:
+                    s_count[s[i - len(p)]] -= 1
+            # 如果两个计数器相等，则找到一个起始索引
+            if p_count == s_count:
+                result.append(i - len(p) + 1)
+
+        return result
