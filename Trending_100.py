@@ -227,3 +227,155 @@ class Solution:
                 result.append(i - len(p) + 1)
 
         return result
+
+'''
+560
+'''
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        dic={0:1}
+        sums,res=0,0
+        for num in nums:
+            sums+=num
+            res+=dic.get(sums-k,0)
+            dic[sums]=dic.get(sums,0)+1
+        return res
+
+'''
+239
+'''
+from collections import deque
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        res = []
+        q = deque()
+        for i, x in enumerate(nums):
+            while q and nums[q[-1]] <= x:
+                q.pop()
+            q.append(i)
+            if i - q[0] >= k:
+                q.popleft()
+            if i >= k-1:
+                res.append(nums[q[0]])
+
+        return res
+
+'''
+76
+'''
+import collections
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        need = collections.Counter(t)
+        need_cnt, i = len(t), 0
+        res = (0, float('inf'))
+
+        for j, char in enumerate(s):
+            if need[char] > 0:
+                need_cnt -= 1
+            need[char] -= 1
+
+            if need_cnt == 0:
+                while i < j and need[s[i]] < 0:
+                    need[s[i]] += 1
+                    i += 1
+                if j - i < res[1] - res[0]:
+                    res = (i, j)
+                need[s[i]] += 1
+                need_cnt += 1
+                i += 1
+
+        return '' if res[1] == float('inf') else s[res[0]:res[1] + 1]
+
+'''
+53
+'''
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+        dp = [0 for _ in range(n)]
+        dp[0] = nums[0]
+        for i in range(1, n):
+            if dp[i-1] >= 0:
+                dp[i] = dp[i-1] + nums[i]
+            else:
+                dp[i] = nums[i]
+        return max(dp)
+    
+'''
+56
+'''
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        n = len(intervals)
+        intervals_s = sorted(intervals, key=lambda x:x[0])
+        res = [intervals_s[0]]
+        for idx in range(1,n):
+            if res[-1][1] >= intervals_s[idx][1]:
+                continue
+            elif res[-1][1] >= intervals_s[idx][0] and res[-1][1] < intervals_s[idx][1]:
+                res[-1] = [res[-1][0], intervals_s[idx][1]]
+            else:
+                res.append(intervals_s[idx])
+        return res
+
+'''
+189
+'''
+from collections import deque
+
+class Solution:
+    def rotate(self, nums: List[int], k: int) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        queue = deque(maxlen=len(nums))
+        for num in nums:
+            queue.append(num)
+        queue.rotate(k)
+        for idx, num in enumerate(queue):
+            nums[idx] = num
+        
+'''
+238
+'''
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        s1, s2 = [1] * (n + 2), [1] * (n + 2)
+        for i in range(1, n + 1):
+            s1[i] = s1[i - 1] * nums[i - 1]
+        for i in range(n, 0, -1):
+            s2[i] = s2[i + 1] * nums[i - 1]
+        ans = [s1[i - 1] * s2[i + 1] for i in range(1, n + 1)]
+        return ans
+    
+'''
+41
+'''
+class Solution:
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        return min(set(range(1, len(nums) + 2)) - set(nums))
+    
+'''
+73
+'''
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        m, n = len(matrix), len(matrix[0])
+        row, col = [False] * m, [False] * n 
+
+        for r in range(m):
+            for c in range(n):
+                if matrix[r][c] == 0:
+                    row[r] = col[c] = True
+        
+        for r in range(m):
+            for c in range(n):
+                if row[r] or col[c]:
+                    matrix[r][c] = 0
