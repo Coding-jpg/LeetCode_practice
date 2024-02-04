@@ -379,3 +379,123 @@ class Solution:
             for c in range(n):
                 if row[r] or col[c]:
                     matrix[r][c] = 0
+
+'''
+48
+'''
+class Solution:
+    def rotate(self, matrix: List[List[int]]) -> None:
+        n = len(matrix)
+        for i in range(n // 2):
+            for j in range((n + 1) // 2):
+                tmp = matrix[i][j]
+                matrix[i][j] = matrix[n - 1 - j][i]
+                matrix[n - 1 - j][i] = matrix[n - 1 - i][n - 1 - j]
+                matrix[n - 1 - i][n - 1 - j] = matrix[j][n - 1 - i]
+                matrix[j][n - 1 - i] = tmp
+
+'''
+240
+'''
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        i, j = len(matrix) - 1, 0
+        while i >= 0 and j < len(matrix[0]):
+            if matrix[i][j] > target: i -= 1
+            elif matrix[i][j] < target: j += 1
+            else: return True
+        return False
+
+'''
+160
+'''
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:
+        A, B = headA, headB
+        while A != B:
+            A = A.next if A else headB
+            B = B.next if B else headA
+        return A
+    
+'''
+206
+'''
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        cur, pre = head, None
+        while cur:
+            cur.next, pre, cur = pre, cur, cur.next
+        return pre
+    
+'''
+234
+'''
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        if not head:
+            return True
+        
+        # 快慢指针找中间节点
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        # 反转后半部分链表
+        prev = None
+        while slow:
+            tmp = slow.next
+            slow.next = prev
+            prev = slow
+            slow = tmp
+        
+        # 比较前半部分和反转后的后半部分
+        left, right = head, prev
+        while right:
+            if left.val != right.val:
+                return False
+            left = left.next
+            right = right.next
+        
+        return True
+
+# 测试代码
+# 创建一个示例链表 1 -> 2 -> 2 -> 1
+head = ListNode(1)
+head.next = ListNode(2)
+head.next.next = ListNode(2)
+head.next.next.next = ListNode(1)
+
+# 检查链表是否为回文
+sol = Solution()
+sol.isPalindrome(head)
+
+'''
+141
+'''
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        if not head:
+            return False
+        hash_map = set()
+        pre = head.next
+        while pre:
+            if pre not in hash_map:
+                hash_map.add(pre)
+                pre = pre.next
+            else:
+                return True
+        return False
+            
+        
