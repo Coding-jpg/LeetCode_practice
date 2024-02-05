@@ -614,3 +614,134 @@ class Solution:
             flag += 1
         return dummy.next
             
+'''
+25
+'''
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        n = 0
+        cur = head
+        while cur:
+            n += 1  # 统计节点个数
+            cur = cur.next
+
+        p0 = dummy = ListNode(next=head)
+        pre = None
+        cur = head
+        while n >= k:
+            n -= k
+            for _ in range(k): 
+                nxt = cur.next
+                cur.next = pre
+                pre = cur
+                cur = nxt
+
+            nxt = p0.next
+            nxt.next = cur
+            p0.next = pre
+            p0 = nxt
+        return dummy.next
+    
+'''
+138
+'''
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if not head: return
+        dic = {}
+        # 3. 复制各节点，并建立 “原节点 -> 新节点” 的 Map 映射
+        cur = head
+        while cur:
+            dic[cur] = Node(cur.val)
+            cur = cur.next
+        cur = head
+        # 4. 构建新节点的 next 和 random 指向
+        while cur:
+            dic[cur].next = dic.get(cur.next)
+            dic[cur].random = dic.get(cur.random)
+            cur = cur.next
+        # 5. 返回新链表的头节点
+        return dic[head]
+
+'''
+148
+'''
+class Solution:
+    def sortList(self, head: ListNode) -> ListNode:
+        h, length, intv = head, 0, 1
+        while h: h, length = h.next, length + 1
+        res = ListNode(0)
+        res.next = head
+        # merge the list in different intv.
+        while intv < length:
+            pre, h = res, res.next
+            while h:
+                # get the two merge head `h1`, `h2`
+                h1, i = h, intv
+                while i and h: h, i = h.next, i - 1
+                if i: break # no need to merge because the `h2` is None.
+                h2, i = h, intv
+                while i and h: h, i = h.next, i - 1
+                c1, c2 = intv, intv - i # the `c2`: length of `h2` can be small than the `intv`.
+                # merge the `h1` and `h2`.
+                while c1 and c2:
+                    if h1.val < h2.val: pre.next, h1, c1 = h1, h1.next, c1 - 1
+                    else: pre.next, h2, c2 = h2, h2.next, c2 - 1
+                    pre = pre.next
+                pre.next = h1 if c1 else h2
+                while c1 > 0 or c2 > 0: pre, c1, c2 = pre.next, c1 - 1, c2 - 1
+                pre.next = h 
+            intv *= 2
+        return res.next
+
+'''
+23
+'''
+ListNode.__lt__ = lambda a, b: a.val < b.val  # 让堆可以比较节点大小
+
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        cur = dummy = ListNode()  # 哨兵节点，作为合并后链表头节点的前一个节点
+        h = [head for head in lists if head]  # 初始把所有链表的头节点入堆
+        heapify(h)  # 堆化
+        while h:  # 循环直到堆为空
+            node = heappop(h)  # 剩余节点中的最小节点
+            if node.next:  # 下一个节点不为空
+                heappush(h, node.next)  # 下一个节点有可能是最小节点，入堆
+            cur.next = node  # 合并到新链表中
+            cur = cur.next  # 准备合并下一个节点
+        return dummy.next  # 哨兵节点的下一个节点就是新链表的头节点
+
+'''
+146
+'''
+from collections import OrderedDict
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.cache = OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key: int) -> int:
+        if key not in self.cache:
+            return -1
+        else:
+            self.cache.move_to_end(key)
+            return self.cache[key]
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+
+
+
+
