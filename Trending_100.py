@@ -742,6 +742,103 @@ class LRUCache:
         if len(self.cache) > self.capacity:
             self.cache.popitem(last=False)
 
+'''
+94
+'''
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if root is None:
+            return []
+        return self.inorderTraversal(root.left) + [root.val] + self.inorderTraversal(root.right)
 
+'''
+104
+'''
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
+        left_depth = self.maxDepth(root.left)
+        right_depth = self.maxDepth(root.right)
+        return max(left_depth, right_depth) + 1
+    
+'''
+226
+'''
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
+def invertTraversal(root):
+    if root is None:
+        return
+    root.left, root.right = root.right, root.left
+    invertTraversal(root.left)
+    invertTraversal(root.right)
+
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        invertTraversal(root)
+        return root
+    
+'''
+101
+'''
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        if root is None:
+            return False
+        queue_left = deque([root.left])
+        queue_right = deque([root.right])
+        while queue_left and queue_right:
+            node_left = queue_left.popleft()
+            node_right = queue_right.popleft()
+            
+            if node_left is None and node_right is None:
+                continue
+            elif node_left is None or node_right is None:
+                return False
+            elif node_left.val != node_right.val:
+                return False
+
+            queue_left.append(node_left.left)
+            queue_left.append(node_left.right)
+            queue_right.append(node_right.right)
+            queue_right.append(node_right.left)
+        
+        return not queue_left and not queue_right
+    
+'''
+543
+'''
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        ans = 0
+        def dfs(node: Optional[TreeNode]) -> int:
+            if node is None:
+                return -1
+            l_len = dfs(node.left) + 1
+            r_len = dfs(node.right) + 1
+            nonlocal ans
+            ans = max(ans, l_len + r_len)
+            return max(l_len, r_len)
+        dfs(root)
+        return ans
 
