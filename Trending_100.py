@@ -498,4 +498,119 @@ class Solution:
                 return True
         return False
             
+'''
+142
+'''
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is None:return None
+        hash_map = set()
+        cur = head
+        while cur:
+            if cur not in hash_map:
+                hash_map.add(cur)
+                cur = cur.next
+            else:
+                return cur
+        return None
         
+'''
+21
+'''
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        if not list1: return list2
+        if not list2: return list1
+        head = ListNode()
+        cur = head
+        while list1 and list2:
+            if list1.val <= list2.val:
+                cur.next = list1
+                list1 = list1.next
+            else:
+                cur.next = list2
+                list2 = list2.next
+            cur = cur.next
+        if not list1:
+            cur.next = list2
+        elif not list2:
+            cur.next = list1
+        return head.next
+        
+'''
+2
+'''
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode], carry=0) -> Optional[ListNode]:
+        cur = dummy = ListNode()
+        carry = 0
+        while l1 or l2 or carry:
+            carry += (l1.val if l1 else 0) + (l2.val if l2 else 0)
+            cur.next = ListNode(carry % 10)
+            carry //= 10
+            if l1: l1 = l1.next
+            if l2: l2 = l2.next
+        return dummy.next
+        
+'''
+19
+'''
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        left = right = dummy = ListNode(next=head)
+        for _ in range(n):
+            right = right.next
+        while right.next:
+            left = left.next
+            right = right.next
+        left.next = left.next.next
+        return dummy.next
+    
+'''
+24
+'''
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        prev = dummy = ListNode(next=head)
+        if not prev.next or not prev.next.next: return head
+        first, second = head, head.next
+        flag = 2
+        while prev and first and second:
+            if flag == 2:
+                prev.next = second
+                first.next = second.next
+                second.next = first
+                flag = 0
+
+            prev = prev.next
+            first = prev.next
+            second = first.next
+            flag += 1
+        return dummy.next
+            
