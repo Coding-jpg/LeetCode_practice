@@ -841,4 +841,99 @@ class Solution:
             return max(l_len, r_len)
         dfs(root)
         return ans
+    
+'''
+102
+'''
+from collections import deque
 
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if root is None: return []
+        level_queque = deque([root])
+        res = []
+        while len(level_queque) != 0:
+            vals = []
+            for _ in range(len(level_queque)):
+                cur = level_queque.popleft()
+                vals.append(cur.val)
+                if cur.left: level_queque.append(cur.left)
+                if cur.right: level_queque.append(cur.right)
+            res.append(vals)
+        return res
+    
+'''
+108
+'''
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        return self.build(nums, 0, len(nums)-1)
+        
+    def build(self, nums, l, r):
+        if l > r:
+            return None
+        mid = l + r >> 1
+        ans = TreeNode(nums[mid])
+        ans.left = self.build(nums, l, mid-1)
+        ans.right = self.build(nums, mid+1, r)
+        return ans
+    
+'''
+98
+'''
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        self.prev = None
+        return self.inorderTraversal(root)
+        
+    def inorderTraversal(self, root: Optional[TreeNode]) -> bool:
+        if root is None: 
+            return True
+        if not self.inorderTraversal(root.left):
+            return False
+        if self.prev is not None and self.prev.val >= root.val:
+            return False
+        self.prev = root
+        return self.inorderTraversal(root.right)
+    
+'''
+230
+'''
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        self.cnt = 0
+        self.result = None
+        self.inorderTraversal(root, k)
+        return self.result
+
+    def inorderTraversal(self, root: Optional[TreeNode], k: int):
+        if root is None:
+            return
+        self.inorderTraversal(root.left, k)
+        self.cnt += 1
+        if self.cnt == k:
+            self.result = root.val
+            return
+        self.inorderTraversal(root.right, k)
+
+'''
+199
+'''
+from collections import deque
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if root is None:
+            return []
+        level_queue = deque([root])
+        res = []
+        while level_queue:
+            level_list = []
+            for _ in range(len(level_queue)):
+                cur = level_queue.popleft()
+                level_list.append(cur.val)
+                if cur.left: level_queue.append(cur.left)
+                if cur.right: level_queue.append(cur.right)
+            res.append(level_list[-1])
+        return res    
+            
