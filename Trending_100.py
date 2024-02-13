@@ -936,4 +936,136 @@ class Solution:
                 if cur.right: level_queue.append(cur.right)
             res.append(level_list[-1])
         return res    
-            
+
+'''
+114
+'''
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+from collections import deque
+
+class Solution:
+    def flatten(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        self.TreeNode_queue = deque()
+        self.preorder_Traversal(root)
+        dummy = TreeNode(-1)
+        cur = dummy
+        while self.TreeNode_queue:
+            cur.right = self.TreeNode_queue.popleft()
+            cur.left = None
+            cur = cur.right
+        root = dummy.right
+        
+    def preorder_Traversal(self, node: Optional[TreeNode]) -> None:
+        if node is None: return
+        self.TreeNode_queue.append(node)
+        self.preorder_Traversal(node.left)
+        self.preorder_Traversal(node.right)
+
+'''
+105
+'''
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        def recur(root, left, right):
+            if left > right: return                               # 递归终止
+            node = TreeNode(preorder[root])                       # 建立根节点
+            i = dic[preorder[root]]                               # 划分根节点、左子树、右子树
+            node.left = recur(root + 1, left, i - 1)              # 开启左子树递归
+            node.right = recur(i - left + root + 1, i + 1, right) # 开启右子树递归
+            return node                                           # 回溯返回根节点
+
+        dic, preorder = {}, preorder
+        for i in range(len(inorder)):
+            dic[inorder[i]] = i
+        return recur(0, 0, len(inorder) - 1)
+
+'''
+437
+'''
+class Solution:
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> int:
+        self.cnt = 0
+        self.dfs(root, targetSum, [])
+        return self.cnt
+
+    def dfs(self, node, target, path_sum):
+        if not node:
+            return
+
+        # 更新当前路径和
+        path_sum = [num + node.val for num in path_sum] + [node.val]
+
+        # 计算等于目标和的路径数
+        self.cnt += path_sum.count(target)
+
+        # 递归遍历左右子树
+        self.dfs(node.left, target, path_sum)
+        self.dfs(node.right, target, path_sum)
+
+'''
+236
+'''
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if root is None or root == p or root == q:
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        if left is not None and right is not None:
+            return root
+        elif left is not None:
+            return left
+        else:
+            return right
+
+'''
+124
+'''
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        self.max_sum = float('-inf')
+        self.max_gain(root)
+        return self.max_sum
+
+    def max_gain(self, node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+
+        # 计算左右子树的最大贡献，如果贡献为负则忽略
+        left_gain = max(self.max_gain(node.left), 0)
+        right_gain = max(self.max_gain(node.right), 0)
+
+        # 当前节点的最大路径和
+        price_newpath = node.val + left_gain + right_gain
+
+        # 更新全局最大路径和
+        self.max_sum = max(self.max_sum, price_newpath)
+
+        # 返回节点的最大贡献值
+        return node.val + max(left_gain, right_gain)
+
+
