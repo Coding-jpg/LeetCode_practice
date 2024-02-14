@@ -1068,4 +1068,90 @@ class Solution:
         # 返回节点的最大贡献值
         return node.val + max(left_gain, right_gain)
 
+'''
+200
+'''
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        res = 0
 
+        def dfs(x, y):
+            if grid[x][y] == '1':
+                grid[x][y] = '0'
+            else:
+                return
+            if x > 0:
+                dfs(x - 1, y)
+            if x < m - 1:
+                dfs(x + 1, y)
+            if y > 0:
+                dfs(x, y - 1)
+            if y < n - 1:
+                dfs(x, y + 1)
+            
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+                    dfs(i, j)
+                    res += 1
+        return res
+
+'''
+994
+'''
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        rows, cols = len(grid), len(grid[0])
+        rot_queue = deque()
+        fresh_count = 0
+
+        for i in range(rows):
+            for j in range(cols):
+                if grid[i][j] == 2:
+                    rot_queue.append((i, j))
+                elif grid[i][j] == 1:
+                    fresh_count += 1
+
+        minutes_passed = 0
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        while rot_queue and fresh_count:
+            minutes_passed += 1
+            for _ in range(len(rot_queue)): 
+                x, y = rot_queue.popleft()
+                for dx, dy in directions:
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == 1:
+                        grid[nx][ny] = 2
+                        fresh_count -= 1
+                        rot_queue.append((nx, ny))
+
+        return minutes_passed if fresh_count == 0 else -1
+
+'''
+207
+'''
+from collections import deque
+
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        indegrees = [0 for _ in range(numCourses)]
+        adjacency = [[] for _ in range(numCourses)]
+        queue = deque()
+        # Get the indegree and adjacency of every course.
+        for cur, pre in prerequisites:
+            indegrees[cur] += 1
+            adjacency[pre].append(cur)
+        # Get all the courses with the indegree of 0.
+        for i in range(len(indegrees)):
+            if not indegrees[i]: queue.append(i)
+        # BFS TopSort.
+        while queue:
+            pre = queue.popleft()
+            numCourses -= 1
+            for cur in adjacency[pre]:
+                indegrees[cur] -= 1
+                if not indegrees[cur]: queue.append(cur)
+        return not numCourses
