@@ -1155,3 +1155,124 @@ class Solution:
                 indegrees[cur] -= 1
                 if not indegrees[cur]: queue.append(cur)
         return not numCourses
+
+'''
+208
+'''
+class TrieNode:
+    def __init__(self):
+        self.children = defaultdict(TrieNode)
+        self.is_word = False
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for s in word:
+            node = node.children[s]
+        node.is_word = True
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for s in word:
+            if s in node.children:
+                node = node.children[s]
+            else:
+                return False
+        return node.is_word
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+        for s in prefix:
+            if s in node.children:
+                node = node.children[s]
+            else:
+                return False
+        return True
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
+
+'''
+46
+'''
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        def dfs(x):
+            if x == len(nums) - 1:
+                res.append(list(nums))
+                return
+            for i in range(x, len(nums)):
+                nums[i], nums[x] = nums[x], nums[i]
+                dfs(x+1)
+                nums[i], nums[x] = nums[x], nums[i]
+
+        res = []
+        dfs(0)
+        return res
+    
+'''
+78
+'''
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        n = len(nums)
+        
+        def helper(i, tmp):
+            res.append(tmp)
+            for j in range(i, n):
+                helper(j + 1,tmp + [nums[j]] )
+        helper(0, [])
+        return res  
+
+'''
+17
+'''
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        if not digits:return []
+        num_dict = {'2':['a','b','c'],'3':['d','e','f'],'4':['g','h','i'],'5':['j','k','l'],
+                    '6':['m','n','o'],'7':['p','q','r','s'],'8':['t','u','v'],'9':['w','x','y','z']}
+        combinations = []
+        n = len(digits)
+        def backtrack(idx:int, path:str):
+            if idx == n:
+                combinations.append(path)
+                return
+
+            for letter in num_dict[digits[idx]]:
+                backtrack(idx+1, path+letter)
+
+        backtrack(0, "")
+        return combinations
+    
+'''
+39
+'''
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        def backtrack(
+            state, target, choices, start, res
+        ):
+            if target == 0:
+                res.append(list(state))
+                return
+            for i in range(start, len(choices)):
+                if target - choices[i] < 0:
+                    break
+                state.append(choices[i])
+                backtrack(state, target - choices[i], choices, i, res)
+                state.pop()
+        state = []
+        candidates.sort()
+        start = 0
+        res = []
+        backtrack(state, target, candidates, start, res)
+        return res
