@@ -1276,3 +1276,133 @@ class Solution:
         res = []
         backtrack(state, target, candidates, start, res)
         return res
+
+'''
+22
+'''
+
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        res = []
+        cur_str = ''
+
+        def dfs(cur_str, left, right, n):   
+            if left == n and right == n:
+                res.append(cur_str)
+                return 
+            elif left > n or right > n:
+                return  
+            if left < right:
+                return  
+            
+            if left < n:
+                dfs(cur_str+'(', left+1, right, n)
+            if right < n:
+                dfs(cur_str+')', left, right+1, n)
+        dfs(cur_str, 0, 0, n)
+        return res
+
+'''
+79
+'''
+from typing import List
+
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        rows, cols = len(board), len(board[0])
+        n = len(word)
+        
+        def dfs(idx, row, col, visited):
+            if idx == n:
+                return True
+            if row < 0 or col < 0 or row >= rows or col >= cols:
+                return False
+            if visited[row][col] or board[row][col] != word[idx]:
+                return False
+            
+            visited[row][col] = True
+            found = (dfs(idx + 1, row + 1, col, visited) or
+                     dfs(idx + 1, row - 1, col, visited) or
+                     dfs(idx + 1, row, col + 1, visited) or
+                     dfs(idx + 1, row, col - 1, visited))
+            visited[row][col] = False
+            return found
+
+        visited = [[False for _ in range(cols)] for _ in range(rows)]
+        for r in range(rows):
+            for c in range(cols):
+                if dfs(0, r, c, visited):
+                    return True
+        return False
+
+'''
+131
+'''
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        ans = []
+        path = []
+        n = len(s)
+        def dfs(i: int) -> None:
+            if i == n:
+                ans.append(path.copy())
+                return
+            for j in range(i, len(s)):
+                t = s[i: j+1]
+                if t == t[::-1]:
+                    path.append(t)
+                    dfs(j+1)
+                    path.pop()
+        dfs(0)
+        return ans
+
+'''
+51
+'''
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        def is_safe(board, row, col, N):
+            for i in range(row):
+                if board[i][col] == 'Q':
+                    return False
+            for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+                if board[i][j] == 'Q':
+                    return False
+            for i, j in zip(range(row, -1, -1), range(col, N)):
+                if board[i][j] == 'Q':
+                    return False
+            return True
+        
+        def solve(board, row, N):
+            if row == N:
+                solutions.append(["".join(row) for row in board])
+
+            for col in range(N):
+                if is_safe(board, row, col, N):
+                    board[row][col] = 'Q'
+                    solve(board, row+1, N)
+                    board[row][col] = '.'
+        
+        solutions = []
+        board = [['.' for _ in range(n)] for _ in range(n)]
+        solve(board, 0, n)
+        return solutions
+    
+'''
+35
+'''
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        def search(sub_list: List[int], left: int, right: int):
+            if left > right:
+                return left  # 如果找不到，返回应该插入的位置
+
+            mid = (left + right) // 2
+            if target == sub_list[mid]:
+                return mid
+            elif target < sub_list[mid]:
+                return search(sub_list, left, mid - 1)
+            else:
+                return search(sub_list, mid + 1, right)
+
+        return search(nums, 0, len(nums) - 1)
