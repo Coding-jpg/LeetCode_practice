@@ -1406,3 +1406,134 @@ class Solution:
                 return search(sub_list, mid + 1, right)
 
         return search(nums, 0, len(nums) - 1)
+
+'''
+74
+'''
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        nums_list = []
+        for nums in matrix:
+            nums_list.extend(nums)
+        def search(nums:List[int], left:int, right:int) -> bool:
+            if left > right:
+                return False
+            mid = (left + right) // 2
+            if target == nums[mid]:
+                return True
+            elif target < nums[mid]:
+                return search(nums, left, mid-1)
+            else:
+                return search(nums, mid+1, right)
+        return search(nums_list, 0, len(nums_list)-1)
+    
+'''
+34
+'''
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        def findLeftMost(nums: List[int], target: int) -> int:
+            left, right = 0, len(nums) - 1
+            while left <= right:
+                mid = left + (right - left) // 2
+                if nums[mid] < target:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            return left
+
+        def findRightMost(nums: List[int], target: int) -> int:
+            left, right = 0, len(nums) - 1
+            while left <= right:
+                mid = left + (right - left) // 2
+                if nums[mid] <= target:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            return right
+
+        left, right = findLeftMost(nums, target), findRightMost(nums, target)
+        if left <= right:
+            return [left, right]
+        else:
+            return [-1, -1]
+
+'''
+33
+'''
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        if not nums:
+            return -1
+
+        # 处理只有一个元素的情况
+        if len(nums) == 1:
+            return 0 if nums[0] == target else -1
+
+        max_idx = nums.index(max(nums))
+        sorted_nums = nums[max_idx+1:] + nums[:max_idx+1]
+
+        def bi_search(sorted_nums: List[int], left: int, right: int) -> int:
+            if left > right:
+                return -1
+            mid = (left + right) // 2
+            if target == sorted_nums[mid]:
+                return (mid + max_idx + 1) % len(nums)
+            elif target < sorted_nums[mid]:
+                return bi_search(sorted_nums, left, mid - 1)
+            else:
+                return bi_search(sorted_nums, mid + 1, right)
+
+        return bi_search(sorted_nums, 0, len(sorted_nums) - 1)
+
+'''
+153
+'''
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        left, right = 0, len(nums) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if nums[mid] < nums[right]:
+                right = mid
+            else:
+                left = mid + 1
+        return nums[left]
+
+'''
+4
+'''
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        # 确保 nums1 是较短的数组
+        if len(nums1) > len(nums2):
+            nums1, nums2 = nums2, nums1
+        
+        m, n = len(nums1), len(nums2)
+        imin, imax, half_len = 0, m, (m + n + 1) // 2
+        
+        while imin <= imax:
+            i = (imin + imax) // 2
+            j = half_len - i
+            if i < m and nums2[j-1] > nums1[i]:
+                # i 太小，需要增大
+                imin = i + 1
+            elif i > 0 and nums1[i-1] > nums2[j]:
+                # i 太大，需要减小
+                imax = i - 1
+            else:
+                # i 正好
+                if i == 0: max_of_left = nums2[j-1]
+                elif j == 0: max_of_left = nums1[i-1]
+                else: max_of_left = max(nums1[i-1], nums2[j-1])
+
+                if (m + n) % 2 == 1:
+                    return max_of_left
+
+                if i == m: min_of_right = nums2[j]
+                elif j == n: min_of_right = nums1[i]
+                else: min_of_right = min(nums1[i], nums2[j])
+
+                return (max_of_left + min_of_right) / 2
+
+        return 0.0
