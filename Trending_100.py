@@ -1537,3 +1537,88 @@ class Solution:
                 return (max_of_left + min_of_right) / 2
 
         return 0.0
+
+'''
+20
+'''
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        mapping = {')': '(', ']': '[', '}': '{'}
+        for char in s:
+            if char in mapping:
+                if not stack or stack.pop() != mapping[char]:
+                    return False
+            else:
+                stack.append(char)
+        return not stack
+
+'''
+155
+'''
+class MinStack:
+
+    def __init__(self):
+        self.content = []
+
+    def push(self, val: int) -> None:
+        self.content.append(val)
+
+    def pop(self) -> None:
+        if self.content:
+            self.content.pop()
+
+    def top(self) -> int:
+        return self.content[-1]
+
+    def getMin(self) -> int:
+        return min(self.content)
+
+'''
+394
+'''
+class Solution:
+    def decodeString(self, s: str) -> str:
+        stack, res, multi = [], "", 0
+        for c in s:
+            if c == '[':
+                stack.append([multi, res])
+                res, multi = "", 0
+            elif c == ']':
+                cur_multi, last_res = stack.pop()
+                res = last_res + cur_multi * res
+            elif '0' <= c <= '9':
+                multi = multi * 10 + int(c)
+            else:
+                res += c
+        return res
+
+'''
+739
+'''
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        n = len(temperatures)
+        ans = [0]*n
+        st = []
+        for i, t in enumerate(temperatures):
+            while st and t > temperatures[st[-1]]:
+                j = st.pop()
+                ans[j] = i-j
+            st.append(i)
+        return ans
+        
+'''
+84
+'''
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        stack = []
+        heights = [0] + heights + [0]
+        res = 0
+        for i in range(len(heights)):
+            while stack and heights[stack[-1]] > heights[i]:
+                tmp = stack.pop()
+                res = max(res, (i - stack[-1] - 1) * heights[tmp])
+            stack.append(i)
+        return res
