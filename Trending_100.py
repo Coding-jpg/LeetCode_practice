@@ -1622,3 +1622,94 @@ class Solution:
                 res = max(res, (i - stack[-1] - 1) * heights[tmp])
             stack.append(i)
         return res
+    
+'''
+215
+'''
+class Solution:
+    def findKthLargest(self, nums, k):
+        def quick_select(nums, k):
+            # 随机选择基准数
+            pivot = random.choice(nums)
+            big, equal, small = [], [], []
+            # 将大于、小于、等于 pivot 的元素划分至 big, small, equal 中
+            for num in nums:
+                if num > pivot:
+                    big.append(num)
+                elif num < pivot:
+                    small.append(num)
+                else:
+                    equal.append(num)
+            if k <= len(big):
+                # 第 k 大元素在 big 中，递归划分
+                return quick_select(big, k)
+            if len(nums) - len(small) < k:
+                # 第 k 大元素在 small 中，递归划分
+                return quick_select(small, k - len(nums) + len(small))
+            # 第 k 大元素在 equal 中，直接返回 pivot
+            return pivot
+        
+        return quick_select(nums, k)
+
+'''
+347
+'''
+import heapq
+from collections import defaultdict
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        count_dict = defaultdict(int)
+        heap = []
+        res = []
+        for num in nums:
+            count_dict[num] += 1
+        for key, val in count_dict.items():
+            heapq.heappush(heap, (-val, key))
+        for _ in range(k):
+            res.append(heapq.heappop(heap)[1])
+        return res
+
+'''
+295
+'''
+import heapq
+class MedianFinder:
+
+    def __init__(self):
+        self.max_heap = []
+        self.min_heap = []
+
+    def addNum(self, num: int) -> None:
+        heapq.heappush(self.max_heap, -num)
+        heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))
+        if len(self.min_heap) > len(self.max_heap) + 1:
+            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))
+
+    def findMedian(self) -> float:
+        if len(self.min_heap) > len(self.max_heap):
+            return self.min_heap[0]
+        else:
+            return (self.min_heap[0] - self.max_heap[0]) / 2 
+
+'''
+121
+'''
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        cost, profit = float('+inf'), 0
+        for price in prices:
+            cost = min(cost, price)
+            profit = max(profit, price - cost)
+        return profit
+    
+'''
+55
+'''
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        max_idx = 0
+        for idx, jump in enumerate(nums):
+            if max_idx >= idx and idx+jump > max_idx:
+                max_idx = idx+jump
+        return max_idx >= idx
