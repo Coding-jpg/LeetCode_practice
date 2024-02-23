@@ -1713,3 +1713,81 @@ class Solution:
             if max_idx >= idx and idx+jump > max_idx:
                 max_idx = idx+jump
         return max_idx >= idx
+    
+'''
+45
+'''
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        if len(nums) == 1:return 0
+        jump_cnt, cur_end, farthest = 0, 0, 0
+        for idx in range(len(nums) - 1):
+            farthest = max(farthest, idx+nums[idx])
+            if idx == cur_end:
+                jump_cnt += 1
+                cur_end = farthest
+        return jump_cnt
+            
+'''
+763
+'''
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        last = {}
+        for i, x in enumerate(s):
+            last[x] = i
+        
+        res = []
+        far = -1
+        start = 0
+        for i in range(len(s)):
+            far = max(far, last[s[i]])
+            if i == far:  
+                res.append(far - start + 1)
+                start = far + 1
+        return res
+    
+'''
+70
+'''
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n < 1: return
+        dp = [0] * (n+1)
+        dp[0], dp[1] = 1, 1
+        for i in range(2, n+1):
+            dp[i] = dp[i-1] + dp[i-2]
+        return dp[-1]
+    
+'''
+118
+'''
+class Solution:
+    def generate(self, numRows: int) -> List[List[int]]:
+        res = [[1]*n for n in range(1, numRows+1)]
+        # n = sum([num for num in range(numRows, -1, -1)])
+        for r_idx,row in enumerate(res[2:]):
+            for idx in range(1, len(row)-1):
+                res[r_idx+2][idx] = res[r_idx+1][idx-1] + res[r_idx+1][idx]
+        return res
+
+'''
+198
+'''
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        '''
+        dp[i] = f(n)
+        dp[n+1] = max(dp[n], dp[n-1]+num)
+        '''
+        n = len(nums)
+        if n == 0:
+            return 0
+        if n == 1:
+            return nums[0]
+        dp = [0]*n
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, n):
+            dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+        return dp[-1]
