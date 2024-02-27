@@ -1791,3 +1791,87 @@ class Solution:
         for i in range(2, n):
             dp[i] = max(dp[i-1], dp[i-2]+nums[i])
         return dp[-1]
+    
+'''
+279
+'''
+class Solution:
+    def numSquares(self, n: int) -> int:
+        '''
+        dp[i] = min{dp[i-j^2]+1}
+        '''
+        dp = [0]*(n+1)
+        for i in range(1, n + 1):
+            if i ** 0.5 % 1 == 0:
+                dp[i] = 1
+            else:
+                dp[i] = 1 + min([dp[i-j*j] for j in range(1,int(i**0.5)+1)])
+        return dp[-1]
+
+'''
+322
+'''
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        '''
+        dp[i] = min(dp[i], dp[i-coin]+1)
+        '''
+        dp = [float('inf')] * (amount+1)
+        dp[0] = 0
+        for i in range(1, amount+1):
+            for coin in coins:
+                if i-coin >= 0:
+                    dp[i] = min(dp[i], dp[i-coin]+1)
+        return dp[-1] if dp[-1] != float('inf') else -1
+    
+'''
+139
+'''
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        wordSet = set(wordDict)  # 转换为集合以提高查找效率
+        dp = [False] * (len(s) + 1)
+        dp[0] = True  # 空字符串可以被分割
+
+        for i in range(1, len(s) + 1):
+            for j in range(i):
+                if dp[j] and s[j:i] in wordSet:
+                    dp[i] = True
+                    break
+
+        return dp[len(s)]
+    
+'''
+300
+'''
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums: return
+        '''
+        dp[i] = dp[i-1] + num
+        dp[i] = max(dp[i], dp[j]+1)
+        '''
+        dp = [1] * len(nums)
+        for i in range(1, len(nums)):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)
+    
+'''
+152
+'''
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        if not nums: return 
+        res = nums[0]
+        pre_max = nums[0]
+        pre_min = nums[0]
+        for num in nums[1:]:
+            cur_max = max(pre_max * num, pre_min * num, num)
+            cur_min = min(pre_max * num, pre_min * num, num)
+            res = max(res, cur_max)
+            pre_max = cur_max
+            pre_min = cur_min
+        return res
