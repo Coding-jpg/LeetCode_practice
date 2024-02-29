@@ -1875,3 +1875,121 @@ class Solution:
             pre_max = cur_max
             pre_min = cur_min
         return res
+    
+'''
+416
+'''
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        '''
+        d[i][j] = dp[i-1][j], j < num
+        d[i][j] = dp[i-1][j] or dp[i-1][j-num], j >= num
+        '''
+        total_sum = sum(nums)
+        if total_sum % 2 != 0:
+            return False
+        n = len(nums)
+        target = total_sum // 2
+        dp = [[False]*(target+1) for _ in range(n+1)]
+        dp[0][0] = True
+
+        for i in range(1, n+1):
+            num = nums[i-1]
+            for j in range(target+1):
+                if j < num:
+                    dp[i][j] = dp[i-1][j]
+                else:
+                    dp[i][j] = dp[i-1][j] or dp[i-1][j-num]
+        return dp[n][target]
+    
+'''
+32
+'''
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        stack = [-1]
+        ret = 0
+        lg = len(s)
+        for i in range(lg):
+            if s[i] == '(':
+                stack.append(i)
+            else:
+                stack.pop()
+                if not stack:
+                    stack.append(i)
+                else:
+                    ret = max(ret, i - stack[-1])
+        return ret
+
+'''
+62
+'''
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        '''
+        dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        '''
+        dp = [[1]*n] + [[1]+[0] * (n-1) for _ in range(m-1)]
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[-1][-1]
+
+'''
+64
+'''
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        rows, cols = len(grid), len(grid[0])
+        dp = [[float('inf')] * cols for _ in range(rows)]
+
+        # 初始化第一个元素
+        dp[0][0] = grid[0][0]
+
+        # 初始化第一行
+        for c in range(1, cols):
+            dp[0][c] = dp[0][c-1] + grid[0][c]
+
+        # 初始化第一列
+        for r in range(1, rows):
+            dp[r][0] = dp[r-1][0] + grid[r][0]
+
+        # 计算其余元素
+        for r in range(1, rows):
+            for c in range(1, cols):
+                dp[r][c] = min(dp[r-1][c], dp[r][c-1]) + grid[r][c]
+
+        return dp[-1][-1]
+
+'''
+5
+'''
+def longestPalindrome(s):
+    n = len(s)
+    if n < 2:
+        return s
+
+    dp = [[False] * n for _ in range(n)]
+    start, max_length = 0, 1
+
+    # 所有长度为1的子串都是回文串
+    for i in range(n):
+        dp[i][i] = True
+
+    # 遍历所有可能的子串长度
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                if length == 2 or dp[i + 1][j - 1]:
+                    dp[i][j] = True
+                    if length > max_length:
+                        start = i
+                        max_length = length
+
+    return s[start:start + max_length]
+
+# 示例
+s = "babad"
+print(longestPalindrome(s))
