@@ -1990,6 +1990,55 @@ def longestPalindrome(s):
 
     return s[start:start + max_length]
 
-# 示例
-s = "babad"
-print(longestPalindrome(s))
+'''
+1143
+'''
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        if not text1 or not text2: 
+            return 0
+        n1, n2 = len(text1), len(text2)
+        dp = [[0] * (n2 + 1) for _ in range(n1 + 1)]
+        
+        for i in range(1, n1 + 1):
+            for j in range(1, n2 + 1):
+                if text1[i - 1] == text2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
+                else:
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+        return dp[-1][-1]
+    
+'''
+72
+'''
+class Solution:
+    def minDistance(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        @cache
+        def dfs(i, j):
+            if i<0: return j+1
+            if j<0: return i+1
+            if s[i] = t[j]: return dfs(i-1, j-1)
+            return min(dfs(i-1, j), dfs(i, j-1), dfs(i-1, j-1)) + 1
+        return dfs(n-1, m-1)
+
+'''
+136
+'''
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        x = 0
+        for num in nums:
+            x ^= num
+        return x
+    
+'''
+169
+'''
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        votes = 0
+        for num in nums:
+            if votes == 0: x = num
+            votes += 1 if num == x else -1
+        return x

@@ -1,2 +1,2 @@
 # LeetCode_practice
-recording for practice on leetcode
+journey on leetcode
