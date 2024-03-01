@@ -2018,7 +2018,7 @@ class Solution:
         def dfs(i, j):
             if i<0: return j+1
             if j<0: return i+1
-            if s[i] = t[j]: return dfs(i-1, j-1)
+            if s[i] == t[j]: return dfs(i-1, j-1)
             return min(dfs(i-1, j), dfs(i, j-1), dfs(i-1, j-1)) + 1
         return dfs(n-1, m-1)
 
@@ -2042,3 +2042,33 @@ class Solution:
             if votes == 0: x = num
             votes += 1 if num == x else -1
         return x
+    
+'''
+75
+'''
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        pre = 0
+        for i in range(3):
+            for j in range(pre, len(nums)):
+                if nums[j] == i:
+                    nums[pre], nums[j] = nums[j], nums[pre]
+                    pre += 1
+        
+'''
+31
+'''
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        n = len(nums)
+        for i in range(n - 2, - 1, - 1):
+            if nums[i] < nums[i + 1]:
+                for j in range(i + 2, n):
+                    if nums[i] < nums[j] < nums[i + 1]: nums[i + 1], nums[j] = nums[j], nums[i + 1]
+                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+                nums[i + 1 :] = sorted(nums[i + 1 :])
+                return
+        nums[:] = nums[::-1]
