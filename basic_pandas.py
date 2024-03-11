@@ -55,3 +55,20 @@ def fix_names(users: pd.DataFrame) -> pd.DataFrame:
     users['name'] = users['name'].str.capitalize()
     users = users.sort_values(by='user_id')
     return users
+
+'''
+1517
+'''
+import pandas as pd
+
+def valid_emails(users: pd.DataFrame) -> pd.DataFrame:
+    df = users[users['mail'].str.match(r"^[a-zA-Z][a-zA-Z0-9_.-]*\@leetcode\.com$")]
+    return df
+
+'''
+1527
+'''
+import pandas as pd
+
+def find_patients(patients: pd.DataFrame) -> pd.DataFrame:
+    return patients[patients['conditions'].str.contains(r"(^|\s)DIAB1")]
