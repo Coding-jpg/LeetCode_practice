@@ -72,3 +72,58 @@ import pandas as pd
 
 def find_patients(patients: pd.DataFrame) -> pd.DataFrame:
     return patients[patients['conditions'].str.contains(r"(^|\s)DIAB1")]
+
+'''
+177
+'''
+import pandas as pd
+
+def nth_highest_salary(employee: pd.DataFrame, N: int) -> pd.DataFrame:
+    sorted_df = employee.sort_values(by='salary', ascending=False).drop_duplicates(subset='salary')
+
+    if 0 < N <= len(sorted_df):
+        nth_salary = sorted_df.iloc[N-1]['salary']
+    else:
+        nth_salary = None 
+
+    res_df = pd.DataFrame({
+        f'getNthHighestSalary({N})': [nth_salary]
+    })
+    return res_df
+
+'''
+176
+'''
+import pandas as pd
+
+def second_highest_salary(employee: pd.DataFrame) -> pd.DataFrame:
+    sorted_df = employee.sort_values(by='salary', ascending=False).drop_duplicates(subset='salary')
+
+    if 2 <= len(sorted_df):
+        sth_salary = sorted_df.iloc[1]['salary']
+    else:
+        sth_salary = None 
+
+    res_df = pd.DataFrame({
+        f'SecondHighestSalary': [sth_salary]
+    })
+    return res_df
+
+'''
+184
+'''
+import pandas as pd
+
+def department_highest_salary(employee: pd.DataFrame, department: pd.DataFrame) -> pd.DataFrame:
+    def get_top_earners(group):
+        top_salary = group['Salary'].max()
+        return group[group['Salary'] == top_salary]
+
+    df = pd.merge(employee, department, left_on='departmentId', right_on='id')
+    df = df.drop(['id_x', 'id_y', 'departmentId'], axis=1) \
+            .rename(columns={'name_x':'Employee', 'name_y':'Department', 'salary':'Salary'})
+    df = df[['Department', 'Employee', 'Salary']] \
+            .sort_values(by='Salary', ascending=False) \
+            .groupby('Department').apply(get_top_earners)
+    return df
+    
