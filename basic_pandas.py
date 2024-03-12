@@ -127,3 +127,27 @@ def department_highest_salary(employee: pd.DataFrame, department: pd.DataFrame) 
             .groupby('Department').apply(get_top_earners)
     return df
     
+'''
+178
+'''
+import pandas as pd
+
+def order_scores(scores: pd.DataFrame) -> pd.DataFrame:
+    scores['rank'] = scores['score'].rank(ascending=False, method='dense').astype(int)
+    return scores.sort_values(by='score', ascending=False).drop('id', axis=1)
+
+'''
+196
+'''
+import pandas as pd
+
+def delete_duplicate_emails(person: pd.DataFrame) -> None:
+
+    # 使用 groupby 按 'email' 分组，并使用 'agg' 来找到每组 'id' 的最小值
+    result = person.groupby('email').agg(min_id=('id', 'min'))
+    # 确定要保留的行
+    keep_rows = person['id'].isin(result['min_id'])
+    # 使用 .loc 更新原始 DataFrame
+    person.loc[~keep_rows, :] = None
+    # 删除值为 None 的行
+    person.dropna(inplace=True)
