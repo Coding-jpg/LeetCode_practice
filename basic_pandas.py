@@ -151,3 +151,46 @@ def delete_duplicate_emails(person: pd.DataFrame) -> None:
     person.loc[~keep_rows, :] = None
     # 删除值为 None 的行
     person.dropna(inplace=True)
+
+'''
+1795
+'''
+import pandas as pd
+
+def rearrange_products_table(products: pd.DataFrame) -> pd.DataFrame:
+    df = pd.melt(
+        products,
+        id_vars='product_id',
+        value_vars=['store1','store2','store3'],
+        var_name='store',
+        value_name='price'
+    ).dropna()
+    return df
+    
+'''
+1907
+'''
+import pandas as pd
+
+def count_salary_categories(accounts: pd.DataFrame) -> pd.DataFrame:
+    low_count = (accounts['income'] < 20000).sum()
+    average_count = ((accounts['income'] >= 20000) & (accounts['income'] <= 50000)).sum()
+    high_count = (accounts['income'] > 50000).sum()
+
+    ans = pd.DataFrame({
+        'category': ['High Salary','Low Salary', 'Average Salary'],
+        'accounts_count': [high_count, low_count, average_count]
+    })
+    return ans
+
+'''
+1741
+'''
+import pandas as pd
+
+def total_time(employees: pd.DataFrame) -> pd.DataFrame:
+    employees['total_time'] = employees['out_time'] - employees['in_time']
+    employees = employees.groupby(['emp_id', 'event_day'])['total_time'].sum().reset_index()
+    employees = employees[['event_day', 'emp_id', 'total_time']]
+    employees = employees.rename(columns={'event_day':'day'})
+    return employees
