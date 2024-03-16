@@ -194,3 +194,45 @@ def total_time(employees: pd.DataFrame) -> pd.DataFrame:
     employees = employees[['event_day', 'emp_id', 'total_time']]
     employees = employees.rename(columns={'event_day':'day'})
     return employees
+
+'''
+511
+'''
+import pandas as pd
+
+def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
+    first_login = activity.groupby('player_id')['event_date'].min().reset_index()
+    first_login = first_login.rename(columns={'event_date':'first_login'})
+    return first_login
+
+'''
+2356
+'''
+import pandas as pd
+
+def count_unique_subjects(teacher: pd.DataFrame) -> pd.DataFrame:
+    df = teacher.groupby('teacher_id')['subject_id'].nunique().reset_index()
+    df = df.rename(columns={'subject_id': 'cnt'})
+    return df
+
+'''
+596
+'''
+import pandas as pd
+
+def find_classes(courses: pd.DataFrame) -> pd.DataFrame:
+    class_counts = courses.groupby('class')['class'].transform('count')
+    df = courses[class_counts >= 5]['class'].drop_duplicates().reset_index(drop=True).to_frame()
+    return df
+
+'''
+586
+'''
+import pandas as pd
+
+def largest_orders(orders: pd.DataFrame) -> pd.DataFrame:
+    if orders.isna().all().all(): return orders['customer_number'].to_frame()
+    df = orders.groupby('customer_number').count().reset_index()
+    print(df)
+    df = df[df['order_number'] == df['order_number'].max()]['customer_number'].to_frame()
+    return df
