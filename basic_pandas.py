@@ -289,3 +289,30 @@ def students_and_examinations(students: pd.DataFrame, subjects: pd.DataFrame, ex
         .reindex(['student_id',	'student_name',	'subject_name',	'attended_exams'],axis=1)
     df['attended_exams'] = df['attended_exams'].fillna(0)
     return df
+
+'''
+607
+'''
+import pandas as pd
+
+def sales_person(sales_person: pd.DataFrame, company: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
+    df = pd.merge(orders, company, on='com_id')
+
+    red_orders = df[df['name'] == 'RED']
+
+    invalid_ids = red_orders.sales_id.unique()
+
+    valid_sales_person = sales_person[~sales_person['sales_id'].isin(invalid_ids)]    
+
+    return valid_sales_person[['name']]
+
+'''
+570
+'''
+import pandas as pd
+
+def find_managers(employee: pd.DataFrame) -> pd.DataFrame:
+    manager_counts = employee.groupby('managerId').size()
+    managers_with_5_or_more = manager_counts[manager_counts >= 5].index
+    managers_names = employee[employee['id'].isin(managers_with_5_or_more)]['name']
+    return managers_names.to_frame()
