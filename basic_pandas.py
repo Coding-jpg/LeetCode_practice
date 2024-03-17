@@ -236,3 +236,56 @@ def largest_orders(orders: pd.DataFrame) -> pd.DataFrame:
     print(df)
     df = df[df['order_number'] == df['order_number'].max()]['customer_number'].to_frame()
     return df
+
+'''
+1484
+'''
+import pandas as pd
+
+def categorize_products(activities: pd.DataFrame) -> pd.DataFrame:
+    df = activities.groupby('sell_date', as_index=False)['product'].agg(num_sold='nunique', products=lambda x: ','.join(sorted(x.unique())))
+    return df
+
+'''
+1693
+'''
+import pandas as pd
+
+def daily_leads_and_partners(daily_sales: pd.DataFrame) -> pd.DataFrame:
+    df = daily_sales.groupby(['date_id', 'make_name'], as_index=False).agg({'lead_id': 'nunique', 'partner_id': 'nunique'}).rename(columns={'lead_id':'unique_leads', 'partner_id':'unique_partners'})
+    return df
+
+'''
+1050
+'''
+import pandas as pd
+
+def actors_and_directors(actor_director: pd.DataFrame) -> pd.DataFrame:
+    df = actor_director.groupby(['actor_id', 'director_id'], as_index=False).agg('count').rename(columns={'timestamp':'count'})
+    return df[df['count'] >= 3][['actor_id', 'director_id']]
+
+'''
+1378
+'''
+import pandas as pd
+
+def replace_employee_id(employees: pd.DataFrame, employee_uni: pd.DataFrame) -> pd.DataFrame:
+    df = pd.merge(employees, employee_uni, left_on='id', right_on='id', how='left')
+    df = df[['unique_id', 'name']]
+    return df
+
+'''
+1280
+'''
+import pandas as pd
+
+def students_and_examinations(students: pd.DataFrame, subjects: pd.DataFrame, examinations: pd.DataFrame) -> pd.DataFrame:
+    df = pd.merge(
+            pd.merge(students,subjects,how='cross'),
+            examinations.groupby(['subject_name','student_id']).size().reset_index(name='attended_exams'),
+            on = ['student_id','subject_name'],
+            how = 'left'
+        ).sort_values(by= ['student_id','subject_name'])\
+        .reindex(['student_id',	'student_name',	'subject_name',	'attended_exams'],axis=1)
+    df['attended_exams'] = df['attended_exams'].fillna(0)
+    return df
