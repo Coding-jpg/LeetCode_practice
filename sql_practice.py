@@ -46,3 +46,50 @@ SELECT w2.id
 FROM Weather w1
 JOIN Weather w2 ON datediff(w2.recordDate, w1.recordDate) = 1
 WHERE w2.Temperature > w1.Temperature
+
+'''1661'''
+# Write your MySQL query statement below
+select
+a1.machine_id, round(avg(a2.timestamp - a1.timestamp), 3) as processing_time
+from Activity as a1 join Activity as a2 on
+a1.machine_id=a2.machine_id and
+a1.process_id=a2.process_id and
+a1.activity_type='start' and
+a2.activity_type='end'
+group by machine_id
+
+'''577'''
+# Write your MySQL query statement below
+select name, bonus
+from Employee left join Bonus on Employee.empId = Bonus.empId
+where bonus < 1000 or bonus is null
+
+'''1280'''
+# Write your MySQL query statement below
+select s.student_id, s.student_name, sub.subject_name, IFNULL(grouped.attended_exams, 0) as attended_exams
+from Students s
+cross join Subjects sub
+left join(
+    select student_id, subject_name, count(*) as attended_exams
+    from Examinations
+    group by student_id, subject_name
+) grouped
+on s.student_id = grouped.student_id and sub.subject_name = grouped.subject_name
+order by s.student_id, sub.subject_name
+
+'''570'''
+select name
+from Employee
+where id in (
+    select distinct ManagerId
+    from Employee
+    group by ManagerId
+    having count(ManagerId) >= 5
+)
+
+'''1943'''
+# Write your MySQL query statement below
+select s.user_id, round(ifnull(avg(c.action='confirmed'), 0), 2) as confirmation_rate
+from Confirmations as c
+right join Signups as s on c.user_id = s.user_id 
+group by s.user_id
