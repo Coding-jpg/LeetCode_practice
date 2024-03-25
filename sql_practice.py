@@ -93,3 +93,25 @@ select s.user_id, round(ifnull(avg(c.action='confirmed'), 0), 2) as confirmation
 from Confirmations as c
 right join Signups as s on c.user_id = s.user_id 
 group by s.user_id
+
+'''620'''
+select  id, movie, description, rating
+from cinema
+where description <> 'boring'
+    and (id % 2) <> 0
+order by rating desc
+
+'''1251'''
+select Prices.product_id, ifnull(round(sum(price*units)/sum(units), 2), 0) as average_price
+from Prices
+left join UnitsSold
+on Prices.product_id = UnitsSold.product_id and
+    UnitsSold.purchase_date between Prices.start_date and Prices.end_date
+group by product_id
+
+'''1075'''
+select project_id, round(avg(experience_years), 2) as average_years
+from Project
+join Employee
+on Project.employee_id = Employee.employee_id
+group by project_id
