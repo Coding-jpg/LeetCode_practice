@@ -115,3 +115,63 @@ from Project
 join Employee
 on Project.employee_id = Employee.employee_id
 group by project_id
+
+-- 1633
+select contest_id, round(count(user_id)/(select count(user_id) from Users), 4) * 100 as percentage
+from Register
+group by contest_id
+order by percentage desc, contest_id asc
+
+-- 1211
+WITH poor AS (
+    SELECT 
+        query_name,
+        SUM(CASE WHEN rating < 3 THEN 1 ELSE 0 END) AS poor_ratings,
+        COUNT(*) AS total
+    FROM Queries
+    GROUP BY query_name
+)
+
+SELECT 
+    p.query_name, 
+    ROUND(AVG(q.rating / q.position), 2) AS quality, 
+    ROUND((poor_ratings * 100.0) / total, 2) AS poor_query_percentage
+FROM poor p
+JOIN Queries q ON p.query_name = q.query_name
+GROUP BY p.query_name;
+
+-- 1193
+# Write your MySQL query statement below
+select date_format(trans_date, '%Y-%m') as month,
+    country,
+    count(*) as trans_count,
+    count(if(state='approved', 1, NULL)) as approved_count,
+    sum(amount) as trans_total_amount,
+    sum(if(state='approved', amount, 0)) as approved_total_amount
+from Transactions
+group by month, country
+
+-- 1174
+select round (
+    sum(order_date = customer_pref_delivery_date) * 100 /
+    count(*),
+    2
+) as immediate_percentage
+from Delivery
+where (customer_id, order_date) in (
+    select customer_id, min(order_date)
+    from delivery
+    group by customer_id
+)
+
+-- 550
+select IFNULL(round(count(distinct(Result.player_id)) / count(distinct(Activity.player_id)), 2), 0) as fraction
+from (
+  select Activity.player_id as player_id
+  from (
+    select player_id, DATE_ADD(MIN(event_date), INTERVAL 1 DAY) as second_date
+    from Activity
+    group by player_id
+  ) as Expected, Activity
+  where Activity.event_date = Expected.second_date and Activity.player_id = Expected.player_id
+) as Result, Activity
