@@ -175,3 +175,37 @@ from (
   ) as Expected, Activity
   where Activity.event_date = Expected.second_date and Activity.player_id = Expected.player_id
 ) as Result, Activity
+
+-- 2356
+select teacher_id, count(distinct subject_id) as cnt
+from Teacher
+group by teacher_id
+
+-- 1141
+select activity_date as day, count(distinct user_id) as active_users
+from Activity
+where datediff('2019-07-27', activity_date) < 30 and datediff('2019-07-27', activity_date) >= 0
+group by activity_date
+
+-- 1084
+select distinct s.product_id, p.product_name
+from Sales s
+join Product p
+on p.product_id = s.product_id
+where s.sale_date >= '2019-01-01' and s.sale_date <= '2019-03-31' and
+    s.product_id not in (
+        select distinct s1.product_id
+        from Sales s1
+        where s1.sale_date < '2019-01-01' or s1.sale_date > '2019-03-31'
+    )
+
+-- 596
+select class
+from Courses
+group by class
+having count(student) >= 5
+
+-- 1729
+select user_id, count(distinct follower_id) as followers_count
+from Followers
+group by user_id
