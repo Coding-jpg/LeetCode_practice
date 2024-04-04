@@ -209,3 +209,52 @@ having count(student) >= 5
 select user_id, count(distinct follower_id) as followers_count
 from Followers
 group by user_id
+
+--619
+select max(num) as num
+from (
+    select num
+    from MyNumbers
+    group by num
+    having count(num) = 1
+) as Nums
+
+-- 1045
+select customer_id
+from Customer
+group by customer_id
+having count(distinct product_key) = (
+    select count(product_key) from Product
+)
+
+-- 1731
+SELECT 
+  E.reports_to AS employee_id, 
+  (SELECT name FROM Employees WHERE employee_id = E.reports_to) AS name,
+  COUNT(*) AS reports_count,
+  ROUND(AVG(E.age)) AS average_age
+FROM 
+  Employees E
+WHERE 
+  E.reports_to IS NOT NULL
+GROUP BY 
+  E.reports_to
+ORDER BY employee_id asc
+
+-- 1789
+select employee_id, department_id
+from Employee
+group by employee_id
+having count(department_id) = 1
+union
+select employee_id, department_id
+from Employee
+where primary_flag = 'Y'
+
+-- 610
+SELECT x, y, z,
+       CASE
+           WHEN (x + y > z) AND (x + z > y) AND (y + z > x) THEN 'Yes'
+           ELSE 'No'
+       END AS Triangle
+FROM Triangle;
