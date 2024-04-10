@@ -282,3 +282,42 @@ FROM (
   ) T
 ) TT
 WHERE TT.RANKING = 1
+
+-- 1204
+select person_name
+from (
+    select person_name, sum(weight) over(order by turn asc) as sum_weight
+    from Queue
+) as sum_table
+where sum_weight <= 1000
+order by sum_weight desc
+limit 1
+
+-- 1907
+SELECT 
+    'Low Salary' AS category,
+    SUM(CASE WHEN income < 20000 THEN 1 ELSE 0 END) AS accounts_count
+FROM 
+    Accounts
+    
+UNION
+SELECT  
+    'Average Salary' category,
+    SUM(CASE WHEN income >= 20000 AND income <= 50000 THEN 1 ELSE 0 END) 
+    AS accounts_count
+FROM 
+    Accounts
+
+UNION
+SELECT 
+    'High Salary' category,
+    SUM(CASE WHEN income > 50000 THEN 1 ELSE 0 END) AS accounts_count
+FROM 
+    Accounts
+
+-- 1978
+select a.employee_id
+from Employees a left join Employees b
+on a.manager_id = b.employee_id
+where a.manager_id is not null and b.employee_id is null and a.salary < 30000
+order by a.employee_id
