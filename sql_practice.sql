@@ -321,3 +321,37 @@ from Employees a left join Employees b
 on a.manager_id = b.employee_id
 where a.manager_id is not null and b.employee_id is null and a.salary < 30000
 order by a.employee_id
+
+-- 626
+select 
+    (case
+        when mod(id, 2) != 0 and counts != id then id + 1
+        when mod(id, 2) != 0 and counts = id then id
+        else id-1
+    end) as id,
+    student
+from
+    seat,
+    (select
+        count(*) as counts
+    from
+        seat) as seat_counts
+order by id asc
+
+-- 1341
+(select u.name as results
+from MovieRating mr 
+left join Users u using(user_id) 
+group by u.user_id
+order by count(movie_id) desc, u.name asc
+limit 1)
+
+union all
+
+(select m.title results
+from MovieRating mr 
+left join Movies m using(movie_id)
+where date_format(mr.created_at,'%Y-%m') = '2020-02'
+group by m.movie_id
+order by avg(rating) desc, m.title asc
+limit 1)
