@@ -355,3 +355,22 @@ where date_format(mr.created_at,'%Y-%m') = '2020-02'
 group by m.movie_id
 order by avg(rating) desc, m.title asc
 limit 1)
+
+-- 1321
+select distinct LL.visited_on,
+                LL.sum_amount as amount,
+                round(LL.sum_amount/7, 2) as average_amount
+from (
+    select visited_on, 
+        sum(TT.amount) over(
+        order by TT.visited_on
+        rows 6 preceding 
+    ) as sum_amount
+    from (
+        select visited_on,
+                sum(amount) as amount
+        from Customer
+        group by visited_on
+    ) TT
+) LL
+where datediff(visited_on, (select min(visited_on) from Customer)) >= 6
