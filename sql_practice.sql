@@ -374,3 +374,41 @@ from (
     ) TT
 ) LL
 where datediff(visited_on, (select min(visited_on) from Customer)) >= 6
+
+-- 602
+select requester_id as id, count(requester_id) as num
+from (
+    select requester_id
+    from RequestAccepted
+    union all
+    select accepter_id
+    from RequestAccepted
+) TT
+group by requester_id
+order by num desc
+limit 1
+
+-- 585
+select 
+    round(sum(tiv_2016),2) tiv_2016
+from(select 
+    tiv_2016,
+    count(*)over(partition by tiv_2015) cn_2015,
+    count(*)over(partition by lat,lon) cn_l
+from insurance
+) t 
+where cn_2015 >1 and cn_l = 1
+
+-- 185
+select Department,
+    Employee,
+    Salary
+from (
+    select d.name as Department,
+    e.name as Employee,
+    salary as Salary,
+    dense_rank() over (partition by departmentId order by salary desc) as s_rank
+    from Employee e
+    join Department d on e.departmentId = d.id
+) TT
+where TT.s_rank <= 3
