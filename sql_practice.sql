@@ -412,3 +412,31 @@ from (
     join Department d on e.departmentId = d.id
 ) TT
 where TT.s_rank <= 3
+
+-- 1667
+select user_id, concat(upper(substring(name, 1, 1)), lower(substring(name, 2))) as name
+from users
+order by user_id
+
+-- 1527
+SELECT patient_id, patient_name, conditions
+FROM patients
+WHERE REGEXP_SUBSTR(conditions, '\\bDIAB1') LIKE 'DIAB1%'
+
+-- 196
+DELETE FROM person
+WHERE id NOT IN (
+    SELECT id FROM (
+        SELECT MIN(id) AS id
+        FROM person
+        GROUP BY email
+    ) AS temp
+)
+
+-- 176
+SELECT (
+    SELECT DISTINCT salary
+    FROM Employee
+    ORDER BY salary DESC
+    LIMIT 1 OFFSET 1
+) AS SecondHighestSalary
