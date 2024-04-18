@@ -440,3 +440,21 @@ SELECT (
     ORDER BY salary DESC
     LIMIT 1 OFFSET 1
 ) AS SecondHighestSalary
+
+-- 1848
+select sell_date, count(distinct product) as num_sold, group_concat(distinct product order by product asc separator ',') as products
+from Activities
+group by sell_date
+
+-- 1327
+select p.product_name, sum(unit) as unit
+from Orders as o
+join Products as p on o.product_id = p.product_id
+where order_date >= '2020-02-01' and order_date < '2020-03-01'
+group by product_name
+having unit >= 100
+
+-- 1517
+SELECT user_id, name, mail
+FROM users
+WHERE mail REGEXP '^[A-Za-z][A-Za-z0-9_.-]*@leetcode\\.com$'
